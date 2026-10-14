@@ -64,3 +64,4 @@ if ($phpCandidate && strpos($phpCandidate, $rootDir) === 0 && file_exists($phpCa
 // 404 fallback
 http_response_code(404);
 echo "<!DOCTYPE html><html lang='th'><head><meta charset='UTF-8'><title>404 Not Found</title></head><body style='font-family: sans-serif; text-align: center; padding: 50px;'><h1>404 ไม่พบหน้านี้</h1><p>หน้าที่คุณค้นหาไม่มีอยู่ในระบบ</p><a href='/'>กลับหน้าแรก</a></body></html>";
+

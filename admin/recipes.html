@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการสูตรอาหาร | ระบบผู้ดูแลระบบ (Croc Cook)</title>
+    
+    <!-- Google Fonts (Prompt) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <style>
+    body {
+        background-color: var(--bg-cream);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .admin-navbar {
+        background-color: #ffffff;
+        border-bottom: 1.5px solid var(--border-subtle);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        padding: 0.85rem 0;
+    }
+    .content-box {
+        background-color: #ffffff;
+        border: 1.5px solid var(--border-subtle);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Admin Navigation Bar -->
+    <nav class="admin-navbar sticky-top">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                <a href="index.html" class="text-decoration-none d-flex align-items-center gap-2">
+                    <span class="brand-icon" style="background-color: var(--primary-light); color: var(--primary-color); width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.3rem;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </span>
+                    <div>
+                        <span class="fw-bold fs-5 text-dark">มีอะไรในครัว?</span>
+                        <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.7rem;">Admin</span>
+                    </div>
+                </a>
+
+                <div class="d-none d-md-flex align-items-center gap-2">
+                    <a href="index.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
+                        <i class="bi bi-speedometer2 me-1"></i> แดชบอร์ด
+                    </a>
+                    <a href="recipes.html" class="btn btn-sm btn-light border rounded-pill px-3 py-2 fw-semibold text-primary" style="background-color: var(--primary-light);">
+                        <i class="bi bi-journal-bookmark me-1"></i> จัดการสูตรอาหาร
+                    </a>
+                    <a href="ingredients.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
+                        <i class="bi bi-basket2 me-1"></i> จัดการวัตถุดิบ
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <a href="../index.html" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2" title="เปิดดูหน้าแรก">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>
+                        <span class="d-none d-sm-inline">ดูหน้าเว็บ</span>
+                    </a>
+                    <button type="button" id="logoutBtn" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2">
+                        <i class="bi bi-box-arrow-right me-1"></i> ออกจากระบบ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="py-4 py-md-5 flex-grow-1">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                <div>
+                    <h1 class="h3 fw-bold text-dark mb-1">จัดการสูตรอาหาร</h1>
+                    <p class="text-muted small mb-0">รายการสูตรอาหารทั้งหมดในระบบ สามารถค้นหา แก้ไข หรือเพิ่มเมนูใหม่ได้</p>
+                </div>
+                <a href="recipe_add.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
+                    <i class="bi bi-plus-circle me-1"></i> เพิ่มสูตรอาหารใหม่
+                </a>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4" style="border: 1px solid var(--border-subtle) !important;">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                            <input type="text" id="recipeSearchInput" class="form-control border-start-0 ps-0" placeholder="ค้นหาชื่อเมนูอาหาร...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="recipeCategoryFilter" class="form-select">
+                            <option value="0">ทุกหมวดหมู่</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-md-end">
+                        <span class="text-muted small">พบ <strong id="filterCount" class="text-dark">6</strong> รายการ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="content-box">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th>#</th>
+                                <th>ชื่อสูตรอาหาร</th>
+                                <th>หมวดหมู่</th>
+                                <th>เวลาปรุง</th>
+                                <th>จำนวนที่</th>
+                                <th>ยอดเข้าชม</th>
+                                <th class="text-end" style="width: 150px;">การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small" id="recipesTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 bg-white border-top text-center text-muted small mt-auto">
+        <div class="container">
+            <span>&copy; 2026 <strong>มีอะไรในครัว? (What's in My Kitchen)</strong> — ระบบจัดการข้อมูลหลังบ้าน</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/data.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!sessionStorage.getItem('admin_logged_in')) {
+            window.location.replace('login.html');
+            return;
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                sessionStorage.removeItem('admin_logged_in');
+                window.location.href = 'login.html';
+            }
+        });
+
+        const categories = KitchenData.getCategories();
+        const catSelect = document.getElementById('recipeCategoryFilter');
+        categories.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            catSelect.appendChild(opt);
+        });
+
+        const searchInput = document.getElementById('recipeSearchInput');
+        const tableBody = document.getElementById('recipesTableBody');
+        const filterCountSpan = document.getElementById('filterCount');
+
+        function render() {
+            const recipes = KitchenData.getRecipes();
+            const query = searchInput.value.trim().toLowerCase();
+            const catId = parseInt(catSelect.value) || 0;
+
+            const filtered = recipes.filter(r => {
+                const matchQ = (r.title || '').toLowerCase().includes(query) || (r.description || '').toLowerCase().includes(query);
+                const matchC = catId === 0 || r.category_id === catId;
+                return matchQ && matchC;
+            });
+
+            filterCountSpan.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">ไม่พบข้อมูลสูตรอาหาร</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = filtered.map(r => `
+                <tr>
+                    <td class="text-muted fw-bold">${r.id}</td>
+                    <td>
+                        <strong class="text-dark d-block">${r.title}</strong>
+                        <small class="text-muted text-truncate d-inline-block" style="max-width: 280px;">${r.description || ''}</small>
+                    </td>
+                    <td><span class="badge bg-light text-dark border rounded-pill">${r.category_name}</span></td>
+                    <td><i class="bi bi-clock text-warning me-1"></i>${r.cooking_time} นาที</td>
+                    <td>${r.servings} ที่</td>
+                    <td><i class="bi bi-eye text-primary me-1"></i>${(r.views || 0).toLocaleString()}</td>
+                    <td class="text-end text-nowrap">
+                        <a href="../recipe_detail.html?id=${r.id}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-2 py-1" title="ดูหน้าเว็บ">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="recipe_edit.html?id=${r.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1 ms-1" title="แก้ไข">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1 ms-1 delete-recipe-btn" data-id="${r.id}" title="ลบ">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Delete handlers
+            document.querySelectorAll('.delete-recipe-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('คุณแน่ใจว่าต้องการลบสูตรอาหารนี้ใช่หรือไม่?')) {
+                        let curRecipes = KitchenData.getRecipes();
+                        curRecipes = curRecipes.filter(x => x.id !== id);
+                        localStorage.setItem('kitchen_recipes', JSON.stringify(curRecipes));
+                        render();
+                    }
+                });
+            });
+        }
+
+        searchInput.addEventListener('input', render);
+        catSelect.addEventListener('change', render);
+
+        render();
+    });
+    </script>
+</body>
+</html>

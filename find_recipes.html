@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลการค้นหาสูตรอาหาร | มีอะไรในครัว? (What's in My Kitchen)</title>
+    
+    <!-- Google Fonts (Prompt) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-lg kitchen-navbar sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <div class="main-food-icon">
+                         <img src="im/logo.png" alt="Logo" style="max-width: 80px; height: auto; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <span class="brand-text">Croc Cook</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#kitchenNavbar" aria-controls="kitchenNavbar" aria-expanded="false" aria-label="สลับแถบเมนู">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="kitchenNavbar">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-1">
+                        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-house-door me-1"></i>หน้าแรก</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="ingredients.html"><i class="bi bi-search me-1"></i>ค้นหาจากวัตถุดิบ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="recipes.html"><i class="bi bi-journal-bookmark me-1"></i>สูตรอาหาร</a></li>
+                        <li class="nav-item"><a class="nav-link" href="categories.html"><i class="bi bi-grid me-1"></i>หมวดหมู่</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.html"><i class="bi bi-info-circle me-1"></i>เกี่ยวกับเรา</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Page Header / Breadcrumb Section -->
+        <section class="py-4" style="background: radial-gradient(circle at top right, #fff4ee 0%, var(--bg-cream) 70%); border-bottom: 1px solid var(--border-subtle);">
+            <div class="container">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0 small">
+                        <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none" style="color: var(--primary-color);"><i class="bi bi-house-door me-1"></i>หน้าแรก</a></li>
+                        <li class="breadcrumb-item"><a href="ingredients.html" class="text-decoration-none" style="color: var(--primary-color);">เลือกวัตถุดิบ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" style="color: var(--text-muted);">ผลการค้นหาสูตรอาหาร</li>
+                    </ol>
+                </nav>
+
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="h2 fw-bold text-dark mb-1">
+                            เมนูที่คุณทำได้ <span class="title-highlight">Recipe Matches</span>
+                        </h1>
+                        <p class="text-muted mb-0">
+                            ระบบจับคู่วัตถุดิบที่คุณมีกับสูตรอาหารในครัว พร้อมคำนวณวัตถุดิบที่พร้อมและวัตถุดิบที่ยังขาด
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <a href="ingredients.html" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                            <i class="bi bi-arrow-repeat me-1"></i> ปรับเปลี่ยนวัตถุดิบ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Results Area -->
+        <section class="py-5" style="background-color: var(--bg-cream); min-height: 550px;">
+            <div class="container">
+
+                <!-- No Ingredients Selected State (Default Hidden) -->
+                <div id="noSelectionAlert" class="row justify-content-center" style="display: none;">
+                    <div class="col-lg-6 col-md-8 text-center">
+                        <div class="card border-0 shadow-sm rounded-4 p-5 bg-white">
+                            <div class="mb-4" style="width: 86px; height: 86px; border-radius: 50%; background-color: var(--primary-light); color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 2.6rem; margin: 0 auto;">
+                                <i class="bi bi-basket2"></i>
+                            </div>
+                            <h2 class="h5 fw-bold text-dark mb-2">ยังไม่ได้เลือกวัตถุดิบสำหรับค้นหา</h2>
+                            <p class="text-muted mb-4 small" style="line-height: 1.7;">
+                                กรุณาเข้าไปติ๊กเลือกวัตถุดิบที่คุณมีอยู่ในครัวก่อน เพื่อให้ระบบสามารถประมวลผลจับคู่เมนูอาหารที่เหมาะสมให้คุณได้
+                            </p>
+                            <div>
+                                <a href="ingredients.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
+                                    <i class="bi bi-check2-square me-1"></i> ไปหน้าเลือกวัตถุดิบ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Wrapper -->
+                <div id="resultsWrapper" style="display: none;">
+                    
+                    <!-- Selected Ingredients Summary Card -->
+                    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-5" style="border: 1px solid var(--border-subtle) !important;">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                <h2 class="h6 fw-bold text-dark mb-0">วัตถุดิบที่คุณมีในครัว</h2>
+                                <span class="badge rounded-pill bg-light text-dark border" id="selectedIngredientsCount">
+                                    0 อย่าง
+                                </span>
+                            </div>
+                            <a href="ingredients.html" class="small text-decoration-none fw-medium" style="color: var(--primary-color);">
+                                <i class="bi bi-pencil-square me-1"></i>แก้ไขวัตถุดิบ
+                            </a>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2" id="selectedIngredientsPills">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- 4-Color Legend Card -->
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-5" style="border: 1px solid var(--border-subtle) !important;">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 32px; height: 32px; border-radius: 8px; background-color: #fff2ea; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                                    <i class="bi bi-palette-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="fw-bold text-dark small d-block">คำอธิบายสัญลักษณ์สีของวัตถุดิบ</span>
+                                    <span class="text-muted" style="font-size: 0.78rem;">ช่วยให้คุณเช็กความพร้อมในการทำแต่ละเมนูได้อย่างชัดเจนและรวดเร็ว</span>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1" style="background-color: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; font-size: 0.78rem; font-weight: 500;">
+                                    <i class="bi bi-check-circle-fill text-success"></i> สีเขียว: สิ่งที่มีอยู่
+                                </span>
+                                <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1" style="background-color: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; font-size: 0.78rem; font-weight: 500;">
+                                    <i class="bi bi-x-circle-fill text-danger"></i> สีแดง: สิ่งที่ขาด (จำเป็น)
+                                </span>
+                                <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1" style="background-color: #fff9c4; color: #78350f; border: 1px solid #ffe082; font-size: 0.78rem; font-weight: 500;">
+                                    <i class="bi bi-droplet-fill text-warning"></i> สีเหลือง: เครื่องปรุง
+                                </span>
+                                <span class="badge rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1 bg-white text-dark" style="border: 1px solid #ced4da; box-shadow: 0 1px 2px rgba(0,0,0,0.04); font-size: 0.78rem; font-weight: 500;">
+                                    <i class="bi bi-dash-circle text-muted"></i> สีขาว: ของที่ใส่หรือไม่ใส่ก็ได้
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- กลุ่มที่ 1: เมนูที่พร้อมปรุงทันที (วัตถุดิบหลักครบถ้วน) -->
+                    <div class="mb-5">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 40px; height: 40px; border-radius: 12px; background-color: #e8f5e9; color: #2e7d32; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                    <i class="bi bi-fire"></i>
+                                </div>
+                                <div>
+                                    <h2 class="h5 fw-bold text-dark mb-0">เมนูที่พร้อมปรุงทันที (วัตถุดิบครบถ้วน)</h2>
+                                    <small class="text-muted">คุณมีวัตถุดิบหลักครบตามสูตร สามารถลงมือทำได้เลย</small>
+                                </div>
+                            </div>
+                            <span class="badge rounded-pill bg-success-subtle text-success-emphasis px-3 py-2 fs-6 mt-2 mt-md-0" id="readyCountBadge">
+                                พร้อมทำ 0 เมนู
+                            </span>
+                        </div>
+                        <div class="row g-4" id="readyToCookGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- กลุ่มที่ 2: เมนูที่ยังขาดบางรายการ (เกือบพร้อมทำ) -->
+                    <div>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 40px; height: 40px; border-radius: 12px; background-color: #fff3e0; color: #e65100; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                    <i class="bi bi-cart-plus"></i>
+                                </div>
+                                <div>
+                                    <h2 class="h5 fw-bold text-dark mb-0">เมนูที่ยังขาดวัตถุดิบบางรายการ (เกือบพร้อมทำ)</h2>
+                                    <small class="text-muted">มีวัตถุดิบแล้วบางส่วน ขาดเพียงบางรายการก็สามารถทำมื้ออร่อยได้</small>
+                                </div>
+                            </div>
+                            <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-2 fs-6 mt-2 mt-md-0" id="needMoreCountBadge">
+                                พบ 0 เมนู
+                            </span>
+                        </div>
+                        <div class="row g-4" id="needMoreGrid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="kitchen-footer">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-5 col-md-6">
+                    <div class="footer-brand">
+                        <i class="bi bi-egg-fried"></i>
+                        <span>มีอะไรในครัว?</span>
+                    </div>
+                    <p class="footer-desc">
+                        เว็บไซต์ช่วยค้นหาสูตรอาหารจากวัตถุดิบที่คุณมีอยู่ในครัว เพื่อลดขยะอาหาร (Food Waste) และตอบคำถามยอดฮิต “วันนี้จะกินอะไรดี?” ได้อย่างง่ายดายและแสนอร่อย
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-heading">เมนูลัด</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="bi bi-chevron-right small"></i> หน้าแรก</a></li>
+                        <li><a href="ingredients.html"><i class="bi bi-chevron-right small"></i> ค้นหาจากวัตถุดิบ</a></li>
+                        <li><a href="recipes.html"><i class="bi bi-chevron-right small"></i> สูตรอาหาร</a></li>
+                        <li><a href="categories.html"><i class="bi bi-chevron-right small"></i> หมวดหมู่อาหาร</a></li>
+                        <li><a href="about.html"><i class="bi bi-chevron-right small"></i> เกี่ยวกับเรา</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="footer-heading">แนวคิดการทำอาหาร</h5>
+                    <div class="footer-quote-box">
+                        <p class="small text-light mb-2">
+                            <i class="bi bi-quote text-warning fs-5"></i>
+                            <em>"การทำอาหารที่ดี ไม่จำเป็นต้องใช้วัตถุดิบราคาแพง แค่รู้จักใช้วัตถุดิบที่มีอย่างสร้างสรรค์ ทุกมื้อก็พิเศษได้"</em>
+                        </p>
+                        <span class="small text-secondary">— มีอะไรในครัว? Team</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <p class="footer-bottom-text">
+                        &copy; 2026 <strong>มีอะไรในครัว? (What's in My Kitchen)</strong> — สงวนลิขสิทธิ์ทั้งหมด
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="footer-bottom-text">พัฒนาด้วยความใส่ใจ เพื่อคนรักการทำอาหาร 🍳</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Kitchen Data Script -->
+    <script src="assets/js/data.js"></script>
+
+    <!-- Page Logic -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        let selectedIds = [];
+
+        // รองรับทั้ง ?ingredients=1,2,3 หรือ ?ingredients[]=1&ingredients[]=2
+        const raw = urlParams.get('ingredients') || urlParams.getAll('ingredients[]');
+        if (Array.isArray(raw)) {
+            selectedIds = raw.map(v => parseInt(v)).filter(v => !isNaN(v) && v > 0);
+        } else if (typeof raw === 'string') {
+            selectedIds = raw.split(',').map(v => parseInt(v)).filter(v => !isNaN(v) && v > 0);
+        }
+
+        const noSelectionAlert = document.getElementById('noSelectionAlert');
+        const resultsWrapper = document.getElementById('resultsWrapper');
+
+        if (selectedIds.length === 0) {
+            noSelectionAlert.style.display = 'flex';
+            resultsWrapper.style.display = 'none';
+            return;
+        }
+
+        noSelectionAlert.style.display = 'none';
+        resultsWrapper.style.display = 'block';
+
+        const allIngredients = KitchenData.getIngredients();
+        const selectedInfo = allIngredients.filter(ing => selectedIds.includes(ing.id));
+
+        document.getElementById('selectedIngredientsCount').textContent = selectedInfo.length + ' อย่าง';
+        document.getElementById('selectedIngredientsPills').innerHTML = selectedInfo.map(item => `
+            <span class="badge rounded-pill px-3 py-2 fw-medium d-inline-flex align-items-center gap-1" style="background-color: #fff2ea; color: var(--primary-color); border: 1px solid rgba(224, 93, 38, 0.2); font-size: 0.85rem;">
+                <i class="bi bi-check-lg small"></i> ${item.name}
+            </span>
+        `).join('');
+
+        // คำนวณผลลัพธ์
+        const { readyToCook, needMoreIngredients } = KitchenData.matchRecipes(selectedIds);
+
+        document.getElementById('readyCountBadge').textContent = 'พร้อมทำ ' + readyToCook.length + ' เมนู';
+        document.getElementById('needMoreCountBadge').textContent = 'พบ ' + needMoreIngredients.length + ' เมนู';
+
+        function renderBadges(recipe) {
+            let h = '<div class="ingredient-status-group mb-3">';
+            if (recipe.group_have && recipe.group_have.length > 0) {
+                h += `
+                <div class="mb-2">
+                    <span class="small fw-semibold text-success d-inline-flex align-items-center gap-1 mb-1">
+                        <i class="bi bi-check-circle-fill" style="font-size: 0.8rem;"></i> ของที่มีอยู่ (${recipe.group_have.length}):
+                    </span>
+                    <div class="d-flex flex-wrap gap-1">
+                        ${recipe.group_have.map(x => `
+                            <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1" style="background-color: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; font-size: 0.74rem; font-weight: 500;">
+                                <i class="bi bi-check-lg text-success"></i> ${x.name}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+            if (recipe.group_missing_essential && recipe.group_missing_essential.length > 0) {
+                h += `
+                <div class="mb-2">
+                    <span class="small fw-semibold text-danger d-inline-flex align-items-center gap-1 mb-1">
+                        <i class="bi bi-x-circle-fill" style="font-size: 0.8rem;"></i> ของที่ขาด (จำเป็น ${recipe.group_missing_essential.length} อย่าง):
+                    </span>
+                    <div class="d-flex flex-wrap gap-1">
+                        ${recipe.group_missing_essential.map(x => `
+                            <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1" style="background-color: #ffebee; color: #b71c1c; border: 1px solid #ef9a9a; font-size: 0.74rem; font-weight: 500;">
+                                <i class="bi bi-x-circle-fill text-danger" style="font-size: 0.65rem;"></i> ${x.name}
+                                ${x.quantity ? `<span class="small" style="color: #c62828;">(${x.quantity} ${x.unit || ''})</span>` : ''}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+            if (recipe.group_seasonings && recipe.group_seasonings.length > 0) {
+                h += `
+                <div class="mb-2">
+                    <span class="small fw-semibold d-inline-flex align-items-center gap-1 mb-1" style="color: #92400e;">
+                        <i class="bi bi-droplet-fill text-warning" style="font-size: 0.8rem;"></i> เครื่องปรุงรส (${recipe.group_seasonings.length} อย่าง):
+                    </span>
+                    <div class="d-flex flex-wrap gap-1">
+                        ${recipe.group_seasonings.map(x => `
+                            <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1" style="background-color: #fff9c4; color: #78350f; border: 1px solid #ffe082; font-size: 0.74rem; font-weight: 500;">
+                                <i class="bi bi-dash" style="color: #b45309;"></i> ${x.name}
+                                ${x.quantity ? `<span class="small" style="color: #92400e;">(${x.quantity} ${x.unit || ''})</span>` : ''}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+            if (recipe.group_optional && recipe.group_optional.length > 0) {
+                h += `
+                <div class="mb-1">
+                    <span class="small fw-semibold text-secondary d-inline-flex align-items-center gap-1 mb-1">
+                        <i class="bi bi-dash-circle text-muted" style="font-size: 0.8rem;"></i> ของที่ใส่หรือไม่ใส่ก็ได้ (ทางเลือก ${recipe.group_optional.length} อย่าง):
+                    </span>
+                    <div class="d-flex flex-wrap gap-1">
+                        ${recipe.group_optional.map(x => `
+                            <span class="badge rounded-pill px-2 py-1 d-inline-flex align-items-center gap-1 bg-white text-dark" style="border: 1px solid #ced4da; font-size: 0.74rem; font-weight: 500;">
+                                <i class="bi bi-circle text-muted" style="font-size: 0.5rem;"></i> ${x.name}
+                                ${x.quantity ? `<span class="text-muted small">(${x.quantity} ${x.unit || ''})</span>` : ''}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+            h += '</div>';
+            return h;
+        }
+
+        // Render Ready To Cook
+        const readyGrid = document.getElementById('readyToCookGrid');
+        if (readyToCook.length === 0) {
+            readyGrid.innerHTML = `
+                <div class="col-12">
+                    <div class="text-center py-4 px-3 bg-white rounded-4 border">
+                        <i class="bi bi-info-circle text-muted fs-3 mb-2 d-block"></i>
+                        <p class="text-muted mb-0 small">ยังไม่มีเมนูที่วัตถุดิบครบถ้วน 100% ลองดูเมนูที่เกือบพร้อมทำด้านล่าง หรือเพิ่มวัตถุดิบเพิ่มเติม</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            readyGrid.innerHTML = readyToCook.map(recipe => {
+                const icon = recipe.category_icon || 'bi-egg-fried';
+                return `
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white" style="border: 1px solid var(--border-subtle) !important;">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-4 position-relative d-flex align-items-center justify-content-center text-center p-3" style="background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%); min-height: 180px;">
+                                <div style="width: 70px; height: 70px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; box-shadow: 0 4px 12px rgba(224, 93, 38, 0.15);">
+                                    <i class="bi ${icon}"></i>
+                                </div>
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-success rounded-pill small">
+                                    <i class="bi bi-check-circle-fill me-1"></i>พร้อมปรุง
+                                </span>
+                            </div>
+                            <div class="col-sm-8 p-3 p-md-4 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="small text-muted">
+                                            <i class="bi ${icon} me-1" style="color: var(--primary-color);"></i>
+                                            ${recipe.category_name || 'ทั่วไป'}
+                                        </span>
+                                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill">
+                                            ตรงกัน ${recipe.match_percent}%
+                                        </span>
+                                    </div>
+                                    <h3 class="h6 fw-bold text-dark mb-2">
+                                        <a href="recipe_detail.html?id=${recipe.id}" class="text-decoration-none text-dark">
+                                            ${recipe.title}
+                                        </a>
+                                    </h3>
+                                    <div class="d-flex gap-3 small text-muted mb-3">
+                                        <span><i class="bi bi-clock text-warning me-1"></i>${recipe.cooking_time} นาที</span>
+                                        <span><i class="bi bi-people text-secondary me-1"></i>${recipe.servings} ที่</span>
+                                    </div>
+                                    ${renderBadges(recipe)}
+                                </div>
+                                <div class="pt-2 border-top mt-2">
+                                    <a href="recipe_detail.html?id=${recipe.id}" class="btn btn-sm btn-kitchen-primary w-100 rounded-pill py-2">
+                                        <i class="bi bi-book-half me-1"></i> ดูวิธีทำสูตรนี้
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Render Need More
+        const needGrid = document.getElementById('needMoreGrid');
+        if (needMoreIngredients.length === 0) {
+            needGrid.innerHTML = `
+                <div class="col-12">
+                    <div class="text-center py-4 px-3 bg-white rounded-4 border">
+                        <i class="bi bi-journal-check text-success fs-3 mb-2 d-block"></i>
+                        <p class="text-muted mb-0 small">ไม่มีเมนูที่ขาดวัตถุดิบ ทุกเมนูที่คุณมีตรงกันพร้อมทำได้เลย!</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            needGrid.innerHTML = needMoreIngredients.map(recipe => {
+                const icon = recipe.category_icon || 'bi-egg-fried';
+                return `
+                <div class="col-lg-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white" style="border: 1px solid var(--border-subtle) !important;">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-4 position-relative d-flex align-items-center justify-content-center text-center p-3" style="background: linear-gradient(135deg, #fff8f5 0%, #faede6 100%); min-height: 180px;">
+                                <div style="width: 70px; height: 70px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; box-shadow: 0 4px 12px rgba(224, 93, 38, 0.15);">
+                                    <i class="bi ${icon}"></i>
+                                </div>
+                                ${recipe.group_missing_essential && recipe.group_missing_essential.length > 0 ? `
+                                    <span class="position-absolute top-0 start-0 m-2 badge bg-danger rounded-pill small shadow-sm">
+                                        <i class="bi bi-x-circle-fill me-1"></i>ขาดของจำเป็น ${recipe.group_missing_essential.length} อย่าง
+                                    </span>
+                                ` : `
+                                    <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark rounded-pill small shadow-sm">
+                                        <i class="bi bi-droplet-half me-1"></i>ขาดเครื่องปรุง
+                                    </span>
+                                `}
+                            </div>
+                            <div class="col-sm-8 p-3 p-md-4 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="small text-muted">
+                                            <i class="bi ${icon} me-1" style="color: var(--primary-color);"></i>
+                                            ${recipe.category_name || 'ทั่วไป'}
+                                        </span>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill">
+                                            ตรงกัน ${recipe.match_percent}%
+                                        </span>
+                                    </div>
+                                    <h3 class="h6 fw-bold text-dark mb-2">
+                                        <a href="recipe_detail.html?id=${recipe.id}" class="text-decoration-none text-dark">
+                                            ${recipe.title}
+                                        </a>
+                                    </h3>
+                                    <div class="d-flex gap-3 small text-muted mb-3">
+                                        <span><i class="bi bi-clock text-warning me-1"></i>${recipe.cooking_time} นาที</span>
+                                        <span><i class="bi bi-people text-secondary me-1"></i>${recipe.servings} ที่</span>
+                                    </div>
+                                    ${renderBadges(recipe)}
+                                </div>
+                                <div class="pt-2 border-top mt-2">
+                                    <a href="recipe_detail.html?id=${recipe.id}" class="btn btn-sm btn-outline-secondary w-100 rounded-pill py-2">
+                                        <i class="bi bi-book-half me-1"></i> ดูสูตรและส่วนผสมทั้งหมด
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    });
+    </script>
+</body>
+</html>
