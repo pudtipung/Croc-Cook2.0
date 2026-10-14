@@ -196,12 +196,26 @@
                 return;
             }
 
-            tableBody.innerHTML = filtered.map(r => `
+            tableBody.innerHTML = filtered.map(r => {
+                const hasImg = KitchenData.hasValidImage(r.image);
+                const imgSrc = hasImg ? KitchenData.getImageUrl(r.image) : '';
+                return `
                 <tr>
                     <td class="text-muted fw-bold">${r.id}</td>
                     <td>
-                        <strong class="text-dark d-block">${r.title}</strong>
-                        <small class="text-muted text-truncate d-inline-block" style="max-width: 280px;">${r.description || ''}</small>
+                        <div class="d-flex align-items-center gap-2">
+                            ${hasImg ? `
+                            <img src="${imgSrc}" alt="${r.title}" class="rounded-3 object-fit-cover border shadow-xs flex-shrink-0" style="width: 44px; height: 44px;" onerror="this.outerHTML='<div class=\\'rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0\\' style=\\'width:44px;height:44px;background:var(--primary-light);color:var(--primary-color);\\'><i class=\\'bi bi-egg-fried\\'></i></div>'">
+                            ` : `
+                            <div class="rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0" style="width: 44px; height: 44px; background: var(--primary-light); color: var(--primary-color); font-size: 1.2rem;">
+                                <i class="bi ${r.category_icon || 'bi-egg-fried'}"></i>
+                            </div>
+                            `}
+                            <div>
+                                <strong class="text-dark d-block">${r.title}</strong>
+                                <small class="text-muted text-truncate d-inline-block" style="max-width: 260px;">${r.description || ''}</small>
+                            </div>
+                        </div>
                     </td>
                     <td><span class="badge bg-light text-dark border rounded-pill">${r.category_name}</span></td>
                     <td><i class="bi bi-clock text-warning me-1"></i>${r.cooking_time} นาที</td>
@@ -219,7 +233,7 @@
                         </button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
 
             // Delete handlers
             document.querySelectorAll('.delete-recipe-btn').forEach(btn => {

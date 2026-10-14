@@ -256,6 +256,21 @@ class KitchenData {
         return recipes.find(r => r.id === parseInt(id)) || null;
     }
 
+    static getImageUrl(image) {
+        if (!image || typeof image !== 'string') return '';
+        const trimmed = image.trim();
+        if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/')) {
+            return trimmed;
+        }
+        return '';
+    }
+
+    static hasValidImage(image) {
+        if (!image || typeof image !== 'string') return false;
+        const trimmed = image.trim();
+        return trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/');
+    }
+
     static incrementViews(recipeId) {
         const id = parseInt(recipeId);
         // ตรวจสอบว่าในเซสชันนี้เคยเปิดเมนูนี้หรือยัง (ป้องกันรีเฟรชแล้วนับซ้ำ)

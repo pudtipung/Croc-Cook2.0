@@ -145,13 +145,18 @@
                             
                             <!-- Banner & Quick Metrics -->
                             <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4" style="border: 1px solid var(--border-subtle) !important;">
-                                <div class="p-5 text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 240px; background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%);">
-                                    <div style="width: 100px; height: 100px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 3.2rem; box-shadow: 0 6px 20px rgba(224, 93, 38, 0.18);" class="mb-3">
-                                        <i id="recipeHeroIcon" class="bi bi-egg-fried"></i>
+                                <div id="recipeHeroBannerContainer">
+                                    <div id="recipeHeroImageBanner" class="position-relative overflow-hidden" style="height: 340px; background-color: #f7ede8; display: none;">
+                                        <img id="recipeHeroImage" src="" alt="รูปภาพสูตรอาหาร" class="w-100 h-100 object-fit-cover">
                                     </div>
-                                    <span class="badge rounded-pill px-3 py-2 bg-white text-dark border shadow-xs" style="font-size: 0.9rem;">
-                                        <i class="bi bi-check2-circle text-success me-1"></i>สูตรอาหารพร้อมวิธีปรุงอย่างละเอียด
-                                    </span>
+                                    <div id="recipeHeroIconBanner" class="p-5 text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 240px; background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%);">
+                                        <div style="width: 100px; height: 100px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 3.2rem; box-shadow: 0 6px 20px rgba(224, 93, 38, 0.18);" class="mb-3">
+                                            <i id="recipeHeroIcon" class="bi bi-egg-fried"></i>
+                                        </div>
+                                        <span class="badge rounded-pill px-3 py-2 bg-white text-dark border shadow-xs" style="font-size: 0.9rem;">
+                                            <i class="bi bi-check2-circle text-success me-1"></i>สูตรอาหารพร้อมวิธีปรุงอย่างละเอียด
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div class="card-body p-3 p-md-4 bg-white border-top">
@@ -368,6 +373,22 @@
         document.getElementById('categoryBadgeIcon').className = 'bi ' + (recipe.category_icon || 'bi-tag') + ' me-1';
         document.getElementById('recipeHeroIcon').className = 'bi ' + (recipe.category_icon || 'bi-egg-fried');
 
+        // แสดงรูปภาพสูตรอาหารใน Hero Banner
+        const hasHeroImg = KitchenData.hasValidImage(recipe.image);
+        if (hasHeroImg) {
+            const heroImg = document.getElementById('recipeHeroImage');
+            const heroImgBanner = document.getElementById('recipeHeroImageBanner');
+            const heroIconBanner = document.getElementById('recipeHeroIconBanner');
+            heroImg.src = KitchenData.getImageUrl(recipe.image);
+            heroImg.alt = recipe.title;
+            heroImg.onerror = function () {
+                heroImgBanner.style.display = 'none';
+                heroIconBanner.style.display = 'flex';
+            };
+            heroImgBanner.style.display = 'block';
+            heroIconBanner.style.display = 'none';
+        }
+
         document.getElementById('viewsCount').textContent = updatedViews.toLocaleString();
         document.getElementById('recipeTitle').textContent = recipe.title;
         document.getElementById('recipeDescription').textContent = recipe.description || '';
@@ -440,14 +461,24 @@
         if (related.length > 0) {
             relatedGrid.innerHTML = related.map(rel => {
                 const rIcon = rel.category_icon || 'bi-egg-fried';
+                const hasRImg = KitchenData.hasValidImage(rel.image);
+                const rImgSrc = hasRImg ? KitchenData.getImageUrl(rel.image) : '';
                 return `
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white" style="border: 1px solid var(--border-subtle) !important;">
-                        <div class="p-3 text-center d-flex align-items-center justify-content-center" style="height: 120px; background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%);">
-                            <div style="width: 56px; height: 56px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(224, 93, 38, 0.15);">
-                                <i class="bi ${rIcon}"></i>
+                        <a href="recipe_detail.html?id=${rel.id}" class="text-decoration-none">
+                            ${hasRImg ? `
+                            <div class="position-relative overflow-hidden" style="height: 140px; background-color: #f7ede8;">
+                                <img src="${rImgSrc}" alt="${rel.title}" class="w-100 h-100 object-fit-cover" onerror="this.parentElement.outerHTML='<div class=\\'p-3 text-center d-flex align-items-center justify-content-center\\' style=\\'height: 120px; background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%);\\'><div style=\\'width: 56px; height: 56px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(224, 93, 38, 0.15);\\'><i class=\\'bi ${rIcon}\\'></i></div></div>'">
                             </div>
-                        </div>
+                            ` : `
+                            <div class="p-3 text-center d-flex align-items-center justify-content-center" style="height: 120px; background: linear-gradient(135deg, #fff2ea 0%, #ffe8db 100%);">
+                                <div style="width: 56px; height: 56px; border-radius: 50%; background: #ffffff; color: var(--primary-color); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 4px 10px rgba(224, 93, 38, 0.15);">
+                                    <i class="bi ${rIcon}"></i>
+                                </div>
+                            </div>
+                            `}
+                        </a>
                         <div class="card-body p-3 d-flex flex-column">
                             <span class="badge rounded-pill bg-light text-muted border mb-2 align-self-start small">
                                 ${rel.category_name || 'ทั่วไป'}
