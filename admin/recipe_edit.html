@@ -116,16 +116,17 @@
                         <!-- ส่วนจัดการรูปภาพสูตรอาหาร -->
                         <div class="col-12">
                             <label class="form-label small fw-semibold">
-                                <i class="bi bi-image me-1 text-primary"></i> รูปภาพสูตรอาหาร
+                                <i class="bi bi-image me-1 text-primary"></i> รูปภาพสูตรอาหาร (เลือกไฟล์หรือใส่ URL ได้)
                             </label>
                             <div class="card p-3 border rounded-3 bg-light" style="border: 1px dashed var(--border-subtle) !important;">
                                 <div class="row g-3 align-items-center">
                                     <div class="col-sm-4 col-md-3">
-                                        <div id="imagePreviewBox" class="position-relative rounded-3 border overflow-hidden d-flex align-items-center justify-content-center bg-white shadow-xs" style="height: 140px;">
+                                        <div id="imagePreviewBox" class="position-relative rounded-3 border overflow-hidden d-flex align-items-center justify-content-center bg-white shadow-xs" style="height: 145px; cursor: pointer;" title="คลิกเพื่อเลือกไฟล์รูปภาพ">
                                             <img id="imagePreview" src="" alt="ตัวอย่างรูปภาพ" class="w-100 h-100 object-fit-cover" style="display: none;">
                                             <div id="imagePlaceholder" class="text-center text-muted p-2">
-                                                <i class="bi bi-card-image fs-1 d-block opacity-50 mb-1"></i>
-                                                <span class="small" style="font-size: 0.75rem;">ยังไม่มีรูปภาพ</span>
+                                                <i class="bi bi-cloud-arrow-up fs-1 d-block opacity-50 mb-1 text-primary"></i>
+                                                <span class="small fw-semibold d-block" style="font-size: 0.78rem;">คลิกเพื่ออัปโหลด</span>
+                                                <span class="text-secondary" style="font-size: 0.7rem;">หรือลากไฟล์มาวาง</span>
                                             </div>
                                             <button type="button" id="removeImageBtn" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle p-0 shadow-sm d-flex align-items-center justify-content-center" style="display: none; width: 26px; height: 26px;" title="ลบรูปภาพ">
                                                 <i class="bi bi-x fs-6"></i>
@@ -136,7 +137,7 @@
                                         <div class="d-flex flex-column gap-2">
                                             <div>
                                                 <label class="form-label small text-dark mb-1">
-                                                    <i class="bi bi-cloud-arrow-up me-1 text-primary"></i> <strong>1. เลือกไฟล์จากอุปกรณ์</strong> (ระบบจะแปลงและย่อขนาดให้อัตโนมัติ)
+                                                    <i class="bi bi-phone me-1 text-primary"></i> <strong>1. เลือกไฟล์จากเครื่อง/มือถือ</strong> (ย่อขนาดอัตโนมัติ)
                                                 </label>
                                                 <input type="file" id="recipeImageFileInput" class="form-control form-control-sm" accept="image/*">
                                             </div>
@@ -146,14 +147,19 @@
                                                 <hr class="flex-grow-1 m-0">
                                             </div>
                                             <div>
-                                                <label class="form-label small text-dark mb-1">
-                                                    <i class="bi bi-link-45deg me-1 text-primary"></i> <strong>2. กรอก URL รูปภาพจากอินเทอร์เน็ต</strong>
-                                                </label>
-                                                <input type="url" id="recipeImageUrlInput" class="form-control form-control-sm" placeholder="https://images.unsplash.com/... หรือ URL รูปภาพ">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <label class="form-label small text-dark mb-0">
+                                                        <i class="bi bi-link-45deg me-1 text-primary"></i> <strong>2. ใส่ลิงก์ URL รูปภาพ</strong>
+                                                    </label>
+                                                    <button type="button" id="useSampleImageBtn" class="btn btn-xs btn-outline-primary rounded-pill py-0 px-2" style="font-size: 0.75rem;">
+                                                        <i class="bi bi-stars me-1"></i>ทดลองใส่ภาพตัวอย่าง
+                                                    </button>
+                                                </div>
+                                                <input type="url" id="recipeImageUrlInput" class="form-control form-control-sm" placeholder="https://images.unsplash.com/... หรือ URL รูปภาพจากเน็ต">
                                             </div>
                                             <input type="hidden" id="recipeImageData">
-                                            <div class="form-text small" style="font-size: 0.78rem;">
-                                                * สามารถอัปโหลดไฟล์รูปภาพจากเครื่อง หรือใส่ URL ภาพจากอินเทอร์เน็ตได้
+                                            <div id="imageStatusText" class="small" style="font-size: 0.78rem; min-height: 18px;">
+                                                <span class="text-muted">* รองรับภาพจากเครื่อง (JPG/PNG) หรือภาพจากเว็บ</span>
                                             </div>
                                         </div>
                                     </div>
@@ -240,6 +246,19 @@
         const imgPreview = document.getElementById('imagePreview');
         const imgPlaceholder = document.getElementById('imagePlaceholder');
         const removeImgBtn = document.getElementById('removeImageBtn');
+        const previewBox = document.getElementById('imagePreviewBox');
+        const statusText = document.getElementById('imageStatusText');
+        const sampleBtn = document.getElementById('useSampleImageBtn');
+
+        function setStatus(msg, type = 'muted') {
+            const colors = {
+                muted: 'text-muted',
+                info: 'text-primary',
+                success: 'text-success fw-semibold',
+                danger: 'text-danger fw-semibold'
+            };
+            statusText.innerHTML = `<span class="${colors[type] || 'text-muted'}">${msg}</span>`;
+        }
 
         function showPreview(src) {
             if (src && src.trim()) {
@@ -280,22 +299,56 @@
                         ctx.drawImage(img, 0, 0, width, height);
                         resolve(canvas.toDataURL('image/jpeg', quality));
                     };
-                    img.onerror = () => reject(new Error('โหลดรูปภาพล้มเหลว'));
+                    img.onerror = () => reject(new Error('ไม่สามารถโหลดไฟล์รูปภาพได้'));
                 };
-                reader.onerror = () => reject(new Error('อ่านไฟล์ล้มเหลว'));
+                reader.onerror = () => reject(new Error('ไม่สามารถอ่านไฟล์ได้'));
             });
         }
 
-        fileInput.addEventListener('change', async function () {
+        async function handleImageFile(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('กรุณาเลือกไฟล์ที่เป็นรูปภาพ เช่น JPG, PNG หรือ WebP');
+                return;
+            }
+            setStatus('<i class="bi bi-arrow-repeat spin me-1"></i>กำลังประมวลผลและย่อขนาดภาพ...', 'info');
+            try {
+                const compressed = await compressImage(file);
+                dataInput.value = compressed;
+                urlInput.value = '';
+                showPreview(compressed);
+                setStatus('<i class="bi bi-check-circle-fill me-1"></i>โหลดรูปภาพจากอุปกรณ์สำเร็จ พร้อมบันทึก', 'success');
+            } catch (err) {
+                setStatus('<i class="bi bi-exclamation-triangle-fill me-1"></i>เกิดข้อผิดพลาดในการประมวลผลรูปภาพ', 'danger');
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+            }
+        }
+
+        // คลิกที่กล่อง Preview เพื่อเลือกรูป
+        previewBox.addEventListener('click', function (e) {
+            if (e.target.closest('#removeImageBtn')) return;
+            fileInput.click();
+        });
+
+        // ลากและวางไฟล์ลงในกล่อง Preview
+        previewBox.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            this.classList.add('border-primary');
+        });
+        previewBox.addEventListener('dragleave', function () {
+            this.classList.remove('border-primary');
+        });
+        previewBox.addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.classList.remove('border-primary');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                handleImageFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
-                try {
-                    const compressed = await compressImage(this.files[0]);
-                    dataInput.value = compressed;
-                    urlInput.value = '';
-                    showPreview(compressed);
-                } catch (err) {
-                    alert('ไม่สามารถประมวลผลรูปภาพได้ กรุณาใช้ไฟล์รูปภาพอื่น');
-                }
+                handleImageFile(this.files[0]);
             }
         });
 
@@ -305,26 +358,52 @@
                 dataInput.value = val;
                 fileInput.value = '';
                 showPreview(val);
+                setStatus('<i class="bi bi-check-circle-fill me-1"></i>ใช้งานรูปภาพจากลิงก์ URL', 'success');
             } else {
                 dataInput.value = '';
                 showPreview('');
+                setStatus('* รองรับภาพจากเครื่อง (JPG/PNG) หรือภาพจากเว็บ', 'muted');
             }
         });
 
-        removeImgBtn.addEventListener('click', function () {
+        // ปุ่มทดลองใส่ภาพตัวอย่าง
+        const sampleImages = [
+            'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80'
+        ];
+        sampleBtn.addEventListener('click', function () {
+            const randomSample = sampleImages[Math.floor(Math.random() * sampleImages.length)];
+            urlInput.value = randomSample;
+            dataInput.value = randomSample;
+            fileInput.value = '';
+            showPreview(randomSample);
+            setStatus('<i class="bi bi-check-circle-fill me-1"></i>ใส่รูปภาพตัวอย่างอาหารสำเร็จ พร้อมบันทึก', 'success');
+        });
+
+        removeImgBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
             dataInput.value = '';
             urlInput.value = '';
             fileInput.value = '';
             showPreview('');
+            setStatus('* ลบรูปภาพแล้ว (สูตรนี้จะใช้ไอคอนประจำหมวดแทน)', 'muted');
         });
 
-        // โหลดรูปภาพเดิมที่มีอยู่
-        if (recipe.image) {
+        // โหลดรูปภาพเดิมที่มีอยู่ (ตรวจสอบความถูกต้อง)
+        const currentValidImg = KitchenData.getImageUrl(recipe.image);
+        if (currentValidImg) {
             dataInput.value = recipe.image;
-            showPreview(KitchenData.getImageUrl(recipe.image));
-            if (!recipe.image.startsWith('data:')) {
-                urlInput.value = recipe.image;
+            showPreview(currentValidImg);
+            if (currentValidImg.startsWith('http://') || currentValidImg.startsWith('https://')) {
+                urlInput.value = currentValidImg;
             }
+            setStatus('<i class="bi bi-image me-1"></i>มีรูปภาพเดิมอยู่ในระบบแล้ว', 'info');
+        } else {
+            dataInput.value = '';
+            showPreview('');
+            setStatus('* ยังไม่มีรูปภาพ สามารถเลือกไฟล์หรือใส่ URL ได้', 'muted');
         }
 
         const recipeIngIds = (recipe.ingredients || []).map(i => parseInt(i.ingredient_id));

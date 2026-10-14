@@ -61,7 +61,7 @@ const DEFAULT_RECIPES = [
         category_id: 1,
         title: 'ผัดกะเพราหมูสับ',
         description: 'เมนูยอดฮิตตลอดกาล กลิ่นหอมใบกะเพราแท้ รสชาติเผ็ดร้อนกลมกล่อม ทำง่ายใน 15 นาที',
-        image: 'kaprao_moo.jpg',
+        image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=800&q=80',
         cooking_time: 15,
         servings: 1,
         instructions: `1. โขลกพริกขี้หนูกับกระเทียมพอหยาบ
@@ -88,7 +88,7 @@ const DEFAULT_RECIPES = [
         category_id: 5,
         title: 'น้ำพริกกะปิ รสเด็ด',
         description: 'น้ำพริกคู่ครัวไทย หอมกะปิแท้ ครบรส เปรี้ยว เค็ม หวาน เผ็ดลงตัว ทานคู่ผักสด ผักต้ม และปลาทูทอด',
-        image: 'namprik_kapi.jpg',
+        image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
         cooking_time: 15,
         servings: 2,
         instructions: `1. นำกะปิไปห่อใบตองหรือฟอยล์แล้วย่างไฟอ่อนๆ พอให้ส่งกลิ่นหอม
@@ -113,7 +113,7 @@ const DEFAULT_RECIPES = [
         category_id: 3,
         title: 'ไข่เจียวฟูกรอบหมูสับ',
         description: 'ไข่เจียวสีเหลืองทอง ฟูกรอบนอก นุ่มใน หอมอร่อยกลมกล่อม เมนูง่ายๆ ที่ใครก็หลงรัก',
-        image: 'kai_jeaw.jpg',
+        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
         cooking_time: 10,
         servings: 1,
         instructions: `1. ตอกไข่ไก่ใส่ชามผสม ใส่หมูสับลงไป
@@ -136,7 +136,7 @@ const DEFAULT_RECIPES = [
         category_id: 6,
         title: 'ข้าวผัดไข่โบราณ',
         description: 'ข้าวผัดหอมกลิ่นคั่วกระทะ เม็ดข้าวร่วนสวย สีเหลืองทอง อิ่มอร่อยสบายท้องสไตล์ครอบครัว',
-        image: 'khao_pad.jpg',
+        image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=800&q=80',
         cooking_time: 15,
         servings: 1,
         instructions: `1. ซอยกระเทียม ต้นหอม และหอมหัวใหญ่เตรียมไว้
@@ -164,7 +164,7 @@ const DEFAULT_RECIPES = [
         category_id: 2,
         title: 'ต้มยำกุ้งน้ำใส',
         description: 'เมนูประจำชาติไทย รสชาติจัดจ้าน เปรี้ยว เผ็ด เค็ม หอมสมุนไพร ข่า ตะไคร้ ใบมะกรูด ซดน้ำร้อนๆ คล่องคอ',
-        image: 'tomyum_kung.jpg',
+        image: 'https://images.unsplash.com/photo-1548943487-a2e4e43b4853?auto=format&fit=crop&w=800&q=80',
         cooking_time: 20,
         servings: 2,
         instructions: `1. ล้างกุ้งสด แกะเปลือก ผ่าหลังดึงเส้นดำออก
@@ -192,7 +192,7 @@ const DEFAULT_RECIPES = [
         category_id: 4,
         title: 'ยำปลากระป๋องรสแซ่บ',
         description: 'เมนูช่วยชีวิตประจำบ้าน อร่อยเลิศ ปรุงง่าย เปรี้ยวเผ็ดจี๊ดจ๊าด ทานกับข้าวสวยร้อนๆ หรือเป็นกับแกล้มก็ลงตัว',
-        image: 'yum_plakadpong.jpg',
+        image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',
         cooking_time: 10,
         servings: 1,
         instructions: `1. ซอยพริกขี้หนู หอมแดง ตะไคร้ และต้นหอมเตรียมไว้
@@ -239,16 +239,27 @@ class KitchenData {
             try { recipes = JSON.parse(stored); } catch (e) {}
         }
 
-        // เชื่อมโยงข้อมูล Category เข้ากับแต่ละ Recipe
+        // เชื่อมโยงข้อมูล Category เข้ากับแต่ละ Recipe พร้อมอัปเดตรูปเริ่มต้นหากข้อมูลเก่าเป็นชื่อไฟล์ชั่วคราว
         return recipes.map(r => {
+            const def = DEFAULT_RECIPES.find(d => d.id === r.id);
+            let img = r.image;
+            if (!KitchenData.hasValidImage(img) && def && KitchenData.hasValidImage(def.image)) {
+                img = def.image;
+            }
             const cat = KitchenData.getCategoryById(r.category_id) || { name: 'ทั่วไป', icon: 'bi-tag' };
             return {
                 ...r,
+                image: img,
                 category_name: cat.name,
                 category_icon: cat.icon,
                 total_ingredients: (r.ingredients || []).length
             };
         });
+    }
+
+    static resetRecipes() {
+        localStorage.setItem('kitchen_recipes', JSON.stringify(DEFAULT_RECIPES));
+        return KitchenData.getRecipes();
     }
 
     static getRecipeById(id) {

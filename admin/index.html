@@ -353,14 +353,18 @@
                 <td class="text-muted fw-bold">${r.id}</td>
                 <td>
                     <div class="d-flex align-items-center gap-2">
+                        <a href="/admin/recipe_edit.html?id=${r.id}" class="d-inline-block text-decoration-none" title="คลิกเพื่อแก้ไขหรือเปลี่ยนรูป">
                         ${hasImg ? `
-                        <img src="${imgSrc}" alt="${r.title}" class="rounded-3 object-fit-cover border shadow-xs flex-shrink-0" style="width: 38px; height: 38px;" onerror="this.outerHTML='<div class=\\'rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0\\' style=\\'width:38px;height:38px;background:var(--primary-light);color:var(--primary-color);\\'><i class=\\'bi bi-egg-fried\\'></i></div>'">
+                        <img src="${imgSrc}" alt="${r.title}" class="rounded-3 object-fit-cover border shadow-xs flex-shrink-0" style="width: 40px; height: 40px;" onerror="this.outerHTML='<div class=\\'rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0\\' style=\\'width:40px;height:40px;background:var(--primary-light);color:var(--primary-color);\\'><i class=\\'bi bi-egg-fried\\'></i></div>'">
                         ` : `
-                        <div class="rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0" style="width: 38px; height: 38px; background: var(--primary-light); color: var(--primary-color); font-size: 1.1rem;">
+                        <div class="rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0" style="width: 40px; height: 40px; background: var(--primary-light); color: var(--primary-color); font-size: 1.2rem;">
                             <i class="bi ${r.category_icon || 'bi-egg-fried'}"></i>
                         </div>
                         `}
-                        <span class="fw-semibold text-dark">${r.title}</span>
+                        </a>
+                        <a href="/admin/recipe_edit.html?id=${r.id}" class="text-decoration-none text-dark fw-semibold" title="คลิกเพื่อแก้ไข">
+                            ${r.title}
+                        </a>
                     </div>
                 </td>
                 <td><span class="badge bg-light text-dark border rounded-pill">${r.category_name}</span></td>
@@ -370,8 +374,8 @@
                     <a href="/recipe_detail.html?id=${r.id}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-2 py-1" title="ดูหน้าเว็บ">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <a href="/admin/recipe_edit.html?id=${r.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1 ms-1" title="แก้ไข">
-                        <i class="bi bi-pencil-square"></i>
+                    <a href="/admin/recipe_edit.html?id=${r.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1 ms-1 fw-medium" title="แก้ไขและใส่รูป">
+                        <i class="bi bi-pencil-square me-1"></i>แก้ไข/รูป
                     </a>
                 </td>
             </tr>

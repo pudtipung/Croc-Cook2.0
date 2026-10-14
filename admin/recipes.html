@@ -89,9 +89,14 @@
                     <h1 class="h3 fw-bold text-dark mb-1">จัดการสูตรอาหาร</h1>
                     <p class="text-muted small mb-0">รายการสูตรอาหารทั้งหมดในระบบ สามารถค้นหา แก้ไข หรือเพิ่มเมนูใหม่ได้</p>
                 </div>
-                <a href="/admin/recipe_add.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
-                    <i class="bi bi-plus-circle me-1"></i> เพิ่มสูตรอาหารใหม่
-                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" id="resetRecipesBtn" class="btn btn-outline-secondary rounded-pill px-3 py-2 small" title="กู้คืนสูตรอาหารและรูปภาพเริ่มต้นของระบบ">
+                        <i class="bi bi-arrow-clockwise me-1"></i> รีเซ็ตรูปและข้อมูลเริ่มต้น
+                    </button>
+                    <a href="/admin/recipe_add.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
+                        <i class="bi bi-plus-circle me-1"></i> เพิ่มสูตรอาหารใหม่
+                    </a>
+                </div>
             </div>
 
             <!-- Filter Toolbar -->
@@ -122,12 +127,12 @@
                         <thead class="table-light small">
                             <tr>
                                 <th>#</th>
-                                <th>ชื่อสูตรอาหาร</th>
+                                <th>รูปภาพ & ชื่อสูตรอาหาร</th>
                                 <th>หมวดหมู่</th>
                                 <th>เวลาปรุง</th>
                                 <th>จำนวนที่</th>
                                 <th>ยอดเข้าชม</th>
-                                <th class="text-end" style="width: 150px;">การจัดการ</th>
+                                <th class="text-end" style="width: 170px;">การจัดการ</th>
                             </tr>
                         </thead>
                         <tbody class="small" id="recipesTableBody">
@@ -204,16 +209,20 @@
                     <td class="text-muted fw-bold">${r.id}</td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
+                            <a href="/admin/recipe_edit.html?id=${r.id}" class="d-inline-block text-decoration-none" title="คลิกเพื่อแก้ไขหรือเปลี่ยนรูป">
                             ${hasImg ? `
-                            <img src="${imgSrc}" alt="${r.title}" class="rounded-3 object-fit-cover border shadow-xs flex-shrink-0" style="width: 44px; height: 44px;" onerror="this.outerHTML='<div class=\\'rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0\\' style=\\'width:44px;height:44px;background:var(--primary-light);color:var(--primary-color);\\'><i class=\\'bi bi-egg-fried\\'></i></div>'">
+                            <img src="${imgSrc}" alt="${r.title}" class="rounded-3 object-fit-cover border shadow-xs flex-shrink-0" style="width: 48px; height: 48px;" onerror="this.outerHTML='<div class=\\'rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0\\' style=\\'width:48px;height:48px;background:var(--primary-light);color:var(--primary-color);\\'><i class=\\'bi bi-egg-fried\\'></i></div>'">
                             ` : `
-                            <div class="rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0" style="width: 44px; height: 44px; background: var(--primary-light); color: var(--primary-color); font-size: 1.2rem;">
+                            <div class="rounded-3 d-inline-flex align-items-center justify-content-center border flex-shrink-0" style="width: 48px; height: 48px; background: var(--primary-light); color: var(--primary-color); font-size: 1.3rem;">
                                 <i class="bi ${r.category_icon || 'bi-egg-fried'}"></i>
                             </div>
                             `}
+                            </a>
                             <div>
-                                <strong class="text-dark d-block">${r.title}</strong>
-                                <small class="text-muted text-truncate d-inline-block" style="max-width: 260px;">${r.description || ''}</small>
+                                <a href="/admin/recipe_edit.html?id=${r.id}" class="text-decoration-none text-dark fw-bold d-block" title="คลิกเพื่อแก้ไข">
+                                    ${r.title}
+                                </a>
+                                <small class="text-muted text-truncate d-inline-block" style="max-width: 250px;">${r.description || ''}</small>
                             </div>
                         </div>
                     </td>
@@ -222,11 +231,11 @@
                     <td>${r.servings} ที่</td>
                     <td><i class="bi bi-eye text-primary me-1"></i>${(r.views || 0).toLocaleString()}</td>
                     <td class="text-end text-nowrap">
-                        <a href="/recipe_detail.html?id=${r.id}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-2 py-1" title="ดูหน้าเว็บ">
+                        <a href="/recipe_detail.html?id=${r.id}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-2 py-1" title="เปิดดูหน้าเว็บ">
                             <i class="bi bi-eye"></i>
                         </a>
-                        <a href="/admin/recipe_edit.html?id=${r.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1 ms-1" title="แก้ไข">
-                            <i class="bi bi-pencil-square"></i>
+                        <a href="/admin/recipe_edit.html?id=${r.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1 ms-1 fw-medium" title="แก้ไขและเปลี่ยนรูป">
+                            <i class="bi bi-pencil-square me-1"></i>แก้ไข/รูป
                         </a>
                         <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1 ms-1 delete-recipe-btn" data-id="${r.id}" title="ลบ">
                             <i class="bi bi-trash"></i>
@@ -248,6 +257,15 @@
                 });
             });
         }
+
+        // Reset Recipes Button
+        document.getElementById('resetRecipesBtn').addEventListener('click', function () {
+            if (confirm('คุณต้องการรีเซ็ตสูตรอาหารทั้งหมดกลับเป็นค่าเริ่มต้นพร้อมรูปภาพคุณภาพสูงใช่หรือไม่?\n(ข้อมูลที่คุณแก้ไขเองจะถูกแทนที่ด้วยค่าเริ่มต้น)')) {
+                KitchenData.resetRecipes();
+                render();
+                alert('รีเซ็ตข้อมูลและโหลดรูปภาพเริ่มต้นเรียบร้อยแล้ว!');
+            }
+        });
 
         searchInput.addEventListener('input', render);
         catSelect.addEventListener('change', render);
