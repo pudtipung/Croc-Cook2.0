@@ -360,3 +360,4 @@ class KitchenData {
 
 // ผูกไว้กับ window เพื่อให้เรียกใช้งานได้ทุกที่
 window.KitchenData = KitchenData;
+

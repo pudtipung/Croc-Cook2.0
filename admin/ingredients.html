@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 
     <style>
     body {
@@ -47,7 +47,7 @@
     <nav class="admin-navbar sticky-top">
         <div class="container">
             <div class="d-flex align-items-center justify-content-between">
-                <a href="index.html" class="text-decoration-none d-flex align-items-center gap-2">
+                <a href="/admin/index.html" class="text-decoration-none d-flex align-items-center gap-2">
                     <span class="brand-icon" style="background-color: var(--primary-light); color: var(--primary-color); width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.3rem;">
                         <i class="bi bi-shield-lock-fill"></i>
                     </span>
@@ -58,19 +58,19 @@
                 </a>
 
                 <div class="d-none d-md-flex align-items-center gap-2">
-                    <a href="index.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
+                    <a href="/admin/index.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
                         <i class="bi bi-speedometer2 me-1"></i> แดชบอร์ด
                     </a>
-                    <a href="recipes.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
+                    <a href="/admin/recipes.html" class="btn btn-sm btn-light rounded-pill px-3 py-2 text-dark">
                         <i class="bi bi-journal-bookmark me-1"></i> จัดการสูตรอาหาร
                     </a>
-                    <a href="ingredients.html" class="btn btn-sm btn-light border rounded-pill px-3 py-2 fw-semibold text-primary" style="background-color: var(--primary-light);">
+                    <a href="/admin/ingredients.html" class="btn btn-sm btn-light border rounded-pill px-3 py-2 fw-semibold text-primary" style="background-color: var(--primary-light);">
                         <i class="bi bi-basket2 me-1"></i> จัดการวัตถุดิบ
                     </a>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                    <a href="../index.html" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2" title="เปิดดูหน้าแรก">
+                    <a href="/index.html" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2" title="เปิดดูหน้าแรก">
                         <i class="bi bi-box-arrow-up-right me-1"></i>
                         <span class="d-none d-sm-inline">ดูหน้าเว็บ</span>
                     </a>
@@ -89,7 +89,7 @@
                     <h1 class="h3 fw-bold text-dark mb-1">จัดการคลังวัตถุดิบ</h1>
                     <p class="text-muted small mb-0">คลังรายการวัตถุดิบและเครื่องปรุงทั้งหมดที่ใช้จับคู่สูตรอาหาร</p>
                 </div>
-                <a href="ingredient_add.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
+                <a href="/admin/ingredient_add.html" class="btn btn-kitchen-primary rounded-pill px-4 py-2">
                     <i class="bi bi-plus-circle me-1"></i> เพิ่มวัตถุดิบใหม่
                 </a>
             </div>
@@ -148,19 +148,21 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/data.js"></script>
+    <script src="/assets/js/data.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        if (!sessionStorage.getItem('admin_logged_in')) {
-            window.location.replace('login.html');
+        const isLoggedIn = localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true';
+        if (!isLoggedIn) {
+            window.location.replace('/admin/login.html');
             return;
         }
 
         document.getElementById('logoutBtn').addEventListener('click', function () {
             if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                localStorage.removeItem('admin_logged_in');
                 sessionStorage.removeItem('admin_logged_in');
-                window.location.href = 'login.html';
+                window.location.href = '/admin/login.html';
             }
         });
 
@@ -202,7 +204,7 @@
                         </span>
                     </td>
                     <td class="text-end text-nowrap">
-                        <a href="ingredient_edit.html?id=${i.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1" title="แก้ไข">
+                        <a href="/admin/ingredient_edit.html?id=${i.id}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1" title="แก้ไข">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1 ms-1 delete-ing-btn" data-id="${i.id}" title="ลบ">
@@ -233,3 +235,4 @@
     </script>
 </body>
 </html>
+
